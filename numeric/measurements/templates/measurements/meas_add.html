@@ -1,0 +1,56 @@
+{% extends 'measurements/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block content %}
+
+<div align="center">
+    <h2>{% trans 'Add measurements' %}</h2>
+
+
+
+<!--Start adding of body measurements-->
+    {% if request.user.is_authenticated %}
+<table border="0" cellpadding="0" align="center">
+<tr valign="top">
+<td align="center">
+    <form action="{% url 'measurements' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div>{{ form.non_field_errors }}</div>
+    {% for f in form %}
+    <p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}: </label>{{ f }}</p>
+    <div class="form-error">{{ f.errors }}</div>
+    {% endfor %}
+
+    <button type="submit" class="button_measurements">{% trans 'Add' %}</button><br><br>
+    </form></div>
+</td>
+
+    {% else %}
+<td width="100%">
+    <div align="center"><b><a href="{% url 'login' %}">{% trans 'Log in' %}</a>{% trans ', if necessary ' %}<a href="{% url 'register' %}">{% trans 'register' %}</a>{% trans ', your body measurement history will be displayed here.' %}</b></div>
+    <br><br>
+</td></tr></Table>
+{% endif %}
+
+<!--End adding of body measurements-->
+
+            <!-- Start dropdown for comparison body measurements -->
+{% if measurements %}
+<div class="dropdown" align="center">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+    {% trans 'Comparison last with measurements from' %}
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                          {% for item in measurements %}
+    <li><a class="dropdown-item" href="{% url 'comparison' item.pk %}">{{ item.Date|date:"Y-M-d" }}</a></li>
+                          {% endfor %}
+
+  </ul>
+</div><br>
+{% endif %}
+</td>
+</tr>
+<!-- End dropdown for comparison body measurements -->
+{% endblock %}
